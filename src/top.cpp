@@ -73,7 +73,15 @@ Top::Top(sc_module_name name_) : sc_module(name_){
 	//BASE_MOTE_ID = distr(e0);
 	log->SC_log() << name() << ": base_mote = mote_" << BASE_MOTE_ID << endl;
 #endif
-	for (int i = 0; i < NUM_MOTES; i++){
+	for (int i = 0; i < NUM_MOTES/2; i++){
+		sprintf(txt, "mote_%d", i);
+		if(MAC_ENABLE) motes[i] = new Mote_a(txt, i);
+		else motes[i] = new Mote_base(txt, i);
+		motes.at(i)->i_socket.bind(channel1->mpt_socket);
+		channel1->mpi_socket.bind(motes.at(i)->t_socket);
+	}
+	
+	for (int i = NUM_MOTES/2+1; i < NUM_MOTES; i++){
 		sprintf(txt, "mote_%d", i);
 		if(MAC_ENABLE) motes[i] = new Mote_a(txt, i);
 		else motes[i] = new Mote_base(txt, i);
